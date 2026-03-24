@@ -87,59 +87,68 @@ The highest-priority unresolved items are: repository/project structure, concret
 
 ## Remaining decisions to be made before MVP build
 
-1. **Repository and solution structure (blocker)**
+### A. Must be decided before implementation starts
+
+1. **Repository and solution structure**
    - Decide monorepo layout for `S.W.O.T`, `Heimdall`, `Huginn`, shared contracts, and infra.
    - Decide where shared domain contracts live to prevent model drift.
 
-2. **Backend and frontend technology choices (blocker)**
+2. **Backend and frontend technology choices**
    - Confirm concrete backend runtime/framework.
    - Confirm frontend framework and rendering model.
    - Confirm API style (REST-first strongly implied; should be formalized).
 
-3. **Storage decision for Muninn (blocker)**
+3. **Storage decision for Muninn**
    - Pick DB engine and migration strategy.
    - Finalize current-state + history schema boundaries.
    - Define indexes/query paths needed for overview/detail refresh patterns.
 
-4. **Configuration storage approach (blocker)**
+4. **Configuration storage approach**
    - Finalize what lives in DB vs deployment config files/env vars.
    - Define branding/config change propagation behavior (reload/restart/cache TTL).
 
-5. **Monitoring ingestion authentication (blocker)**
+5. **Monitoring ingestion authentication**
    - Choose auth mechanism (deployment-level API key vs per-client key).
    - Define key distribution, rotation, revocation, and auditability expectations for MVP.
 
-6. **Monitoring payload contract + versioning (blocker)**
+6. **Monitoring payload contract + versioning**
    - Publish authoritative schema and endpoint contract.
    - Decide required vs optional fields and validation/error codes.
    - Define contract versioning and backward compatibility approach.
 
-7. **Service/instance/check modelling (blocker)**
+7. **Service/instance/check modelling**
    - Canonicalize entity definitions and IDs.
    - Decide whether checks are first-class persisted entities in MVP or only summarized into instance payloads.
 
-8. **Roll-up + threshold rule details (blocker)**
+8. **Roll-up + threshold rule details**
    - Finalize precedence matrix among explicit status, thresholds, maintenance, stale, unknown.
    - Define deterministic rules for partial/missing data and mixed instance populations.
 
-9. **Initial API surface (blocker)**
+9. **Initial API surface**
    - Lock first endpoint list for ingestion and dashboard reads.
    - Define pagination/sorting/filtering conventions and response shapes.
 
-10. **Deployment + local dev model (high priority)**
+10. **Deployment + local dev model**
     - Define MVP deployment reference architecture.
     - Define local developer startup path including sample data + Huginn simulation.
 
-11. **Testing strategy and CI quality gates (high priority)**
+11. **Testing strategy and CI quality gates**
     - Agree minimal required automated tests per component.
     - Define merge gates for contract, unit, and integration coverage.
 
-12. **Heimdall observability for itself (high priority)**
+12. **Heimdall observability for itself**
     - Decide structured logging format, log fields, health/readiness endpoints, and minimal platform metrics.
 
-13. **Huginn per-host/node configuration model (high priority)**
+13. **Huginn per-host/node configuration model**
     - Define static file/env/CLI config shape for endpoint/auth/object+instance mapping/check definitions.
     - Define update/reload behavior and retry/backoff defaults.
+
+### B. Can be deferred until after the first implementation spike
+
+- Advanced retention/cleanup and longer-horizon archival design (keep MVP focused on recent history while validating real write/query patterns first).
+- Optional expansion of dashboard branding options beyond the currently documented set.
+- Future admin UI details (already explicitly out of MVP scope).
+- Future synthetic browser testing through Huginn (already explicitly out of MVP scope).
 
 ---
 
