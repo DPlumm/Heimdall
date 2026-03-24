@@ -177,6 +177,79 @@ The highest-priority unresolved items are: repository/project structure, concret
 10. **Heimdall self-observability baseline**.
 11. **Huginn node configuration profile and defaults**.
 
+#### 1. Canonical glossary and naming
+- Canonical terms: `Service`, `Instance`, `Heartbeat`.
+- `object` alias is disallowed immediately.
+- Product/component names remain: `Heimdall`, `S.W.O.T`, `Huginn`, `Muninn`.
+
+#### 2. Repository and solution structure
+- Use a monorepo.
+- Use shared packages for cross-component contracts/types.
+- `Huginn` and `Muninn` each have their own first-class code directories in the repo.
+
+#### 3. Payload and API contract
+- Protocol: REST + JSON over HTTPS.
+- Contract authority: OpenAPI + JSON Schema.
+- Versioning: `/api/v1/...` + payload `schema_version`.
+- Terminology: use `heartbeats` explicitly.
+- MVP ingestion endpoint: `POST /api/v1/heartbeats`.
+
+#### 4. Storage engine, schema, migrations
+- DB engine: SQLite.
+- Migrations: SQL-first migration files in repo.
+- Retention: 90 days.
+- Model: dedicated current-state tables + heartbeat history.
+- Dedupe: client-provided `heartbeat_id` (UUID) with uniqueness enforcement.
+
+#### 5. Ingestion authentication
+- Per-Huginn-node API key.
+- Static API key header authentication.
+- Rotation: manual for MVP.
+- Revocation: immediate deny-list behavior.
+- Audit: log key fingerprint/ID + source IP + auth outcome.
+- Governance: review manual-rotation policy before 1.0 release planning (target review date: 2026-09-01).
+
+#### 6. Roll-up and threshold precedence
+- Instance precedence: Maintenance first; freshness (`Stale`/`Unknown`) before thresholds.
+- Conflict handling: worse-of explicit status vs threshold-derived status wins.
+- Service severity order: `Unhealthy > Degraded > Stale > Unknown > Healthy`.
+- If all instances are Maintenance, service status is Maintenance.
+
+#### 7. Config and branding storage split
+- Branding in DB.
+- Thresholds in DB.
+- Secrets in file/env.
+- Runtime propagation: TTL cache.
+- Default TTL: 5 minutes.
+
+#### 8. Deployment and local dev model
+- Deployment reference: Docker Compose on single host/VM.
+- Local dev bootstrap: single `docker compose up` path.
+- Include deterministic seed/demo data.
+- Include Huginn simulation tooling in repo.
+- Keep dev/prod shape aligned (resource-scaled differences only).
+
+#### 9. Testing strategy and CI gates
+- PR gates: lint + unit + contract tests.
+- Integration tests required on PR.
+- Minimal UI smoke E2E required on PR.
+- No hard global coverage % gate yet; enforce critical-path coverage.
+- Breaking schema changes require version bump.
+
+#### 10. Heimdall observability baseline
+- JSON structured logs.
+- Health endpoints: liveness + readiness.
+- Correlation: `X-Request-ID`.
+- Metrics endpoint: `/metrics`.
+- Logging policy: metadata-only by default; deny payload content logging by default.
+
+#### 11. Huginn node configuration profile/defaults
+- Config source: file with env overrides.
+- Default heartbeat interval: 60s.
+- Retry: exponential backoff + jitter.
+- Reload behavior: restart required for MVP.
+- Destination outage behavior: keep retrying; do not crash process.
+
 ---
 
 ## Suggested “ready to build MVP” checklist
