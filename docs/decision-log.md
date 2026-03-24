@@ -182,7 +182,7 @@ This provides a distinct end-user-facing identity for the dashboard, while `Heim
 ## 2026-03-24: Dashboard branding configuration
 
 ### Decision
-Dashboard branding will be configurable through `Web.config`.
+Dashboard branding will be configurable through deployment application configuration.
 
 ### Reasoning
 Brand styling should be adjustable without code changes so the dashboard can be branded appropriately for its deployment context.
@@ -238,16 +238,16 @@ This name should be used for the monitoring client in documentation, code, confi
 
 ---
 
-## 2026-03-24: Historical data storage component name
+## 2026-03-24: Storage component name and MVP role
 
 ### Decision
-The name `Muninn` will be reserved for a  future data stroage component related to retained history, analysis, or longer-term operational memory.
+The storage component will be named `Muninn` and is part of the MVP platform scope.
 
 ### Reasoning
-`Muninn` complements `Huginn` within the same Norse mythology theme and is a good fit for a future component focused on memory, history, or analysis rather than active monitoring.
+`Muninn` complements `Huginn` within the same Norse mythology theme and is a good fit for the platform persistence layer responsible for current state and recent history.
 
 ### Notes
-This does not introduce any new MVP scope. It only reserves the name for possible future use.
+`Muninn` is the persistence layer used by `Heimdall` in the MVP.
 
 ---
 

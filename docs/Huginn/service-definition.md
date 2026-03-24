@@ -66,6 +66,7 @@ Huginn produces monitoring submissions to Heimdall, including:
 - message
 - labels
 - stat values
+- optional environment metadata (MVP deployments should report `Production` if provided)
 
 ## Dependencies
 

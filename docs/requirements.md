@@ -1,16 +1,16 @@
-# Heimdal MVP Requirements
+# Heimdall MVP Requirements
 
 ## Purpose
 
-This document defines the minimum viable product requirements for the Heimdal platform.
+This document defines the minimum viable product requirements for the Heimdall platform.
 
-Heimdal is the backend platform behind `S.W.O.T` (`Software Well-being Observability Tool`), a public, read-only status dashboard for operational visibility of monitored systems.
+Heimdall is the backend platform behind `S.W.O.T` (`Software Well-being Observability Tool`), a public, read-only status dashboard for operational visibility of monitored systems.
 
 The MVP is intended to provide a simple, useful first version that can be deployed in organisational environments, home labs, and personal or family-hosted environments.
 
 ## Product Summary
 
-The Heimdal MVP consists of four core components:
+The Heimdall MVP consists of four core components:
 
 - `S.W.O.T` - the user-facing web dashboard
 - `Heimdall` - the API and application layer
@@ -47,7 +47,7 @@ The MVP does not aim to provide:
 
 ## Deployment Scope
 
-Each Heimdal deployment is production-only.
+Each Heimdall deployment is production-only.
 
 If non-production visibility is required, such as UAT, it should be handled through a separate deployment rather than through multi-environment support inside a single instance.
 
@@ -299,8 +299,11 @@ Each monitoring submission must be able to include:
 - labels
 - stat values
 - version or build information, where available
+- environment, optionally, for deployment metadata compatibility
 
 The submission format should be consistent across monitored targets.
+
+If `environment` is sent in MVP, it must be `Production` for that deployment.
 
 ## 4. Status Requirements
 
@@ -517,6 +520,6 @@ The MVP can be considered successful if it provides:
 
 ## Summary
 
-The Heimdal MVP is a simple, production-focused monitoring platform built around a public read-only dashboard and a lightweight push-based monitoring client.
+The Heimdall MVP is a simple, production-focused monitoring platform built around a public read-only dashboard and a lightweight push-based monitoring client.
 
 Its purpose is to provide a clear and useful view of service health and selected stats without introducing unnecessary complexity in the first release.
