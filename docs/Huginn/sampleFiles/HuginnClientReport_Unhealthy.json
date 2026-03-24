@@ -1,0 +1,27 @@
+{
+  "objectName": "HelgaCraft",
+  "objectType": "GameServer",
+  "environment": "Production",
+  "instanceName": "PROD-helgaCraft",
+  "hostName": "helga",
+  "version": "1.2.0",
+  "timestamp": "2026-03-24T13:00:00Z",
+  "status": "Unhealthy",
+  "message": "Server Unhealthy - Average response time is too high.",
+  "labels": [
+    "owner:dplumm",
+    "category:deployment"
+  ],
+  "stats": [
+    {
+      "key": "playerCount",
+      "value": 1,
+      "unit": "count"
+    },
+    {
+      "key": "avgResponseMs",
+      "value": 999999999,
+      "unit": "ms"
+    }
+  ]
+}
