@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes how the core Heimdal platform services relate to one another.
+This document describes how the core Heimdall platform services relate to one another.
 
 It explains the role of each named component and how data flows through the platform in the MVP.
 

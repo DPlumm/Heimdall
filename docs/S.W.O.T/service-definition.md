@@ -7,7 +7,7 @@ Software Well-being Observability Tool
 
 ## Purpose
 
-S.W.O.T is the user-facing web dashboard for the Heimdal platform.
+S.W.O.T is the user-facing web dashboard for the Heimdall platform.
 
 Its purpose is to provide a clear, read-only view of the current health, freshness, and selected statistics of monitored systems.
 

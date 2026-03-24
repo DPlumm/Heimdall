@@ -4,7 +4,7 @@
 
 The current documentation gives a clear MVP intent and stable boundaries (public read-only dashboard, push ingestion, production-only deployments, service + instance visibility, simple thresholds/labels). What is still missing is **implementation-level decision closure** needed to start build execution confidently.
 
-The highest-priority unresolved items are: repository/project structure, concrete technology stack choices, storage technology/schema approach, ingestion authentication, Huginn payload contract/versioning, roll-up + threshold precedence edge cases, and the first API surface. There are also naming/document consistency issues (for example `Heimdal` vs `Heimdall`, `decisionLog.md` vs documented `decision-log.md`, and `Requirments` folder spelling) that should be fixed early to avoid drift.
+The highest-priority unresolved items are: repository/project structure, concrete technology stack choices, storage technology/schema approach, ingestion authentication, Huginn payload contract/versioning, roll-up + threshold precedence edge cases, and the first API surface.
 
 ---
 
@@ -51,9 +51,9 @@ The highest-priority unresolved items are: repository/project structure, concret
 ## Ambiguities, contradictions, and vague areas
 
 ### Naming/documentation consistency gaps
-- Inconsistent naming appears across docs (`Heimdal` and `Heimdall` both used).
-- README references `docs/decision-log.md` and `docs/requirements.md`, but repository uses `docs/decisionLog.md` and `docs/Requirments/MVP.md`.
-- `Muninn` is described as reserved for future in one decision, but is also documented as an MVP storage layer elsewhere.
+- Path/name mismatches were corrected (`docs/decision-log.md` and `docs/requirements.md` are now canonical).
+- The prior `Muninn` contradiction (future-only vs MVP storage layer) has been aligned to MVP storage-layer usage.
+- Remaining naming cleanup is mostly terminology consistency (`service` vs `object`).
 
 ### Architecture/implementation ambiguity
 - No final decision on backend framework/runtime.
