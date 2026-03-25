@@ -27,17 +27,15 @@ The highest-priority unresolved items are: repository/project structure, concret
 - Tenancy boundaries are out of scope for MVP.
 
 ### Core behavior decisions already settled
-- Status model includes: `Healthy`, `Degraded`, `Unhealthy`, `Stale`, `Unknown`, `Maintenance`.
-- Freshness windows are defined:
+- Base status model includes: `Healthy`, `Degraded`, `Unhealthy`.
+- Freshness model includes:
   - 0–60s live
   - 61s–5m stale
   - >5m unknown
-- Default roll-up direction is defined at a high level:
-  - any Unhealthy -> Unhealthy
-  - else any Degraded -> Degraded
-  - else any Stale -> Stale
-  - else all valid Healthy -> Healthy
-  - else no valid data -> Unknown
+- Maintenance is treated as a status effect that can be applied in addition to base status.
+- Default roll-up direction is defined at a high level by dimension:
+  - base status roll-up: any Unhealthy -> Unhealthy; else any Degraded -> Degraded; else Healthy
+  - freshness roll-up: any Unknown -> Unknown; else any Stale -> Stale; else Live
 - Platform should support configurable stats + threshold influence.
 - Monitoring payload fields are broadly defined (object/instance identity, timestamp, status, labels, stats, message, version/build).
 
@@ -199,6 +197,7 @@ The highest-priority unresolved items are: repository/project structure, concret
 - Terminology: use `heartbeats` explicitly.
 - MVP ingestion endpoint: `POST /api/v1/heartbeats`.
 - Published JSON Schema: `docs/contracts/heartbeat.v1.schema.json`.
+- Payload semantics: `status` carries base health (`Healthy|Degraded|Unhealthy`); maintenance is represented by a separate optional `maintenance` boolean effect.
 
 #### 3a. Initial API endpoint list and response contracts (MVP)
 
@@ -239,40 +238,34 @@ Response/error baseline for all endpoints:
 - Governance: review manual-rotation policy before 1.0 release planning (target review date: 2026-09-01).
 
 #### 6. Roll-up and threshold precedence
-- Instance precedence: Maintenance first; freshness (`Stale`/`Unknown`) before thresholds.
-- Conflict handling: worse-of explicit status vs threshold-derived status wins.
-- Service severity order: `Unhealthy > Degraded > Stale > Unknown > Healthy`.
-- If all instances are Maintenance, service status is Maintenance.
+- Base health status uses: `Healthy`, `Degraded`, `Unhealthy`.
+- `Maintenance` is a **status effect/flag** that can be applied in addition to base health status.
+- Freshness (`Live`/`Stale`/`Unknown`) is derived from heartbeat age and tracked independently from base health status.
+- Conflict handling: worse-of explicit base status vs threshold-derived base status wins.
 
-Instance-status decision matrix (MVP):
+Instance evaluation matrix (MVP):
 
-| Priority | Condition | Resulting instance status |
+| Step | Condition | Result |
 | --- | --- | --- |
-| 1 (highest) | Explicit status is `Maintenance` | `Maintenance` |
-| 2 | Freshness window is `Unknown` (>5m old) and not Maintenance | `Unknown` |
-| 3 | Freshness window is `Stale` (61s-5m old) and not Maintenance | `Stale` |
-| 4 | Fresh heartbeat, explicit+threshold conflict | Worse of explicit status and threshold-derived status |
-| 5 | Fresh heartbeat, no conflict | Explicit status (or threshold-derived if explicit omitted in future contract versions) |
+| 1 | Determine base health from explicit status and thresholds | `Unhealthy > Degraded > Healthy` (worse wins) |
+| 2 | Apply maintenance effect if maintenance mode is set | `maintenance=true` (base status remains) |
+| 3 | Compute freshness from timestamp age | `Live` (0-60s), `Stale` (61s-5m), `Unknown` (>5m) |
 
-Service roll-up matrix (instance population):
+Service roll-up matrix (MVP):
 
-| Evaluation order | Condition across instances | Resulting service status |
+| Dimension | Rule across instances | Result |
 | --- | --- | --- |
-| 1 | All instances are `Maintenance` | `Maintenance` |
-| 2 | Any non-maintenance instance is `Unhealthy` | `Unhealthy` |
-| 3 | Else any non-maintenance instance is `Degraded` | `Degraded` |
-| 4 | Else any non-maintenance instance is `Stale` | `Stale` |
-| 5 | Else any non-maintenance instance is `Unknown` | `Unknown` |
-| 6 | Else all non-maintenance instances are `Healthy` | `Healthy` |
-| 7 | Else (no valid non-maintenance data) | `Unknown` |
+| Base service status | Any instance base status is `Unhealthy` -> `Unhealthy`; else any `Degraded` -> `Degraded`; else `Healthy` | `Healthy` / `Degraded` / `Unhealthy` |
+| Service maintenance effect | If all instances have maintenance effect, service maintenance effect = true; otherwise false | `maintenance=true|false` |
+| Service freshness | If any instance freshness is `Unknown` -> `Unknown`; else any `Stale` -> `Stale`; else `Live` | `Live` / `Stale` / `Unknown` |
 
 Worked examples:
-1. **Two instances**: `Healthy`, `Unhealthy` -> service `Unhealthy`.
-2. **Two instances**: `Healthy`, `Degraded` -> service `Degraded`.
-3. **Two instances**: `Stale`, `Healthy` -> service `Stale`.
-4. **One instance**: explicit `Healthy`, threshold-derived `Unhealthy` -> instance `Unhealthy` (worse wins).
-5. **One instance**: explicit `Maintenance`, stale timestamp -> instance `Maintenance` (maintenance precedence).
-6. **All instances**: `Maintenance`, `Maintenance` -> service `Maintenance`.
+1. **Two instances**: base `Healthy`, base `Unhealthy` (both live) -> service base status `Unhealthy`, freshness `Live`, maintenance `false`.
+2. **Two instances**: base `Healthy`, base `Degraded` (both live) -> service base status `Degraded`, freshness `Live`, maintenance `false`.
+3. **Two instances**: base `Healthy` (stale), base `Healthy` (live) -> service base status `Healthy`, freshness `Stale`, maintenance `false`.
+4. **One instance**: explicit base `Healthy`, threshold-derived base `Unhealthy` -> instance base status `Unhealthy` (worse wins), freshness based on timestamp.
+5. **One instance**: base `Healthy`, maintenance mode enabled, stale timestamp -> instance base `Healthy` with `maintenance=true` and freshness `Stale`.
+6. **All instances**: base `Healthy` + `maintenance=true` for each -> service base status `Healthy`, service maintenance `true`, freshness from newest/oldest rules above.
 
 #### 7. Config and branding storage split
 - Branding in DB.

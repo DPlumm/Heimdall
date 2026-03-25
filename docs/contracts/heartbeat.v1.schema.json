@@ -58,9 +58,12 @@
       "enum": [
         "Healthy",
         "Degraded",
-        "Unhealthy",
-        "Maintenance"
+        "Unhealthy"
       ]
+    },
+    "maintenance": {
+      "type": "boolean",
+      "description": "Optional status effect flag indicating planned maintenance mode."
     },
     "message": {
       "type": "string",
