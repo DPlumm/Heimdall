@@ -187,12 +187,41 @@ The highest-priority unresolved items are: repository/project structure, concret
 - Use shared packages for cross-component contracts/types.
 - `Huginn` and `Muninn` each have their own first-class code directories in the repo.
 
+#### 2a. Backend and frontend technology choices
+- Backend stack: .NET (Heimdall API/runtime).
+- Frontend stack: native HTML5-first implementation for `S.W.O.T` MVP.
+- Rendering approach: keep `S.W.O.T` 100% native as much as possible through development.
+
 #### 3. Payload and API contract
 - Protocol: REST + JSON over HTTPS.
 - Contract authority: OpenAPI + JSON Schema.
 - Versioning: `/api/v1/...` + payload `schema_version`.
 - Terminology: use `heartbeats` explicitly.
 - MVP ingestion endpoint: `POST /api/v1/heartbeats`.
+- Published JSON Schema: `docs/contracts/heartbeat.v1.schema.json`.
+
+#### 3a. Initial API endpoint list and response contracts (MVP)
+
+| Endpoint | Direction | Purpose | Request body | Success response |
+| --- | --- | --- | --- | --- |
+| `POST /api/v1/heartbeats` | Push (Huginn -> Heimdall) | Submit heartbeat updates for service/instance state. | `heartbeat.v1` JSON schema | `202 Accepted` + `{ "heartbeat_id": "...", "received_at": "...", "status": "accepted" }` |
+| `GET /api/v1/services` | Pull (S.W.O.T <- Heimdall) | List service roll-up status for dashboard overview. | n/a | `200 OK` + paged list of services with roll-up status and freshness metadata. |
+| `GET /api/v1/services/{service_id}` | Pull (S.W.O.T <- Heimdall) | Service detail with instance states and latest stats/message. | n/a | `200 OK` + service detail object + instance list. |
+| `GET /api/v1/services/{service_id}/history` | Pull (S.W.O.T <- Heimdall) | Recent status/history timeline for one service. | n/a | `200 OK` + time-ordered heartbeat summary records. |
+| `GET /api/v1/config/huginn` | Pull (Huginn <- Heimdall) | Pull Huginn node config profile (thresholds/labels/check mappings; no secrets). | n/a | `200 OK` + node-scoped config document + `config_version`. |
+| `POST /api/v1/config/events` | Push (operator/automation -> Heimdall) | Push config-change events for cache invalidation/reload coordination. | config event payload (`event_id`, `event_type`, `config_version`) | `202 Accepted` + event receipt object. |
+
+Response/error baseline for all endpoints:
+- Correlation ID support via `X-Request-ID` request/response header.
+- Standard error envelope: `{ "error": { "code": "...", "message": "...", "details": [] } }`.
+- Common error statuses: `400`, `401`, `403`, `404`, `409`, `413`, `422`, `429`, `500`.
+
+#### 3b. Service/instance/check persistence model (MVP)
+- `Service` and `Instance` are first-class persisted entities.
+- `Heartbeat` events are persisted in history (90-day retention) and folded into current-state tables.
+- `Check` is **not** a first-class persisted entity in MVP.
+- Check outcomes are represented through heartbeat `status`, `message`, and `stats` fields.
+- Future post-MVP option: promote checks to first-class entities only if query/use-cases justify it.
 
 #### 4. Storage engine, schema, migrations
 - DB engine: SQLite.
@@ -214,6 +243,36 @@ The highest-priority unresolved items are: repository/project structure, concret
 - Conflict handling: worse-of explicit status vs threshold-derived status wins.
 - Service severity order: `Unhealthy > Degraded > Stale > Unknown > Healthy`.
 - If all instances are Maintenance, service status is Maintenance.
+
+Instance-status decision matrix (MVP):
+
+| Priority | Condition | Resulting instance status |
+| --- | --- | --- |
+| 1 (highest) | Explicit status is `Maintenance` | `Maintenance` |
+| 2 | Freshness window is `Unknown` (>5m old) and not Maintenance | `Unknown` |
+| 3 | Freshness window is `Stale` (61s-5m old) and not Maintenance | `Stale` |
+| 4 | Fresh heartbeat, explicit+threshold conflict | Worse of explicit status and threshold-derived status |
+| 5 | Fresh heartbeat, no conflict | Explicit status (or threshold-derived if explicit omitted in future contract versions) |
+
+Service roll-up matrix (instance population):
+
+| Evaluation order | Condition across instances | Resulting service status |
+| --- | --- | --- |
+| 1 | All instances are `Maintenance` | `Maintenance` |
+| 2 | Any non-maintenance instance is `Unhealthy` | `Unhealthy` |
+| 3 | Else any non-maintenance instance is `Degraded` | `Degraded` |
+| 4 | Else any non-maintenance instance is `Stale` | `Stale` |
+| 5 | Else any non-maintenance instance is `Unknown` | `Unknown` |
+| 6 | Else all non-maintenance instances are `Healthy` | `Healthy` |
+| 7 | Else (no valid non-maintenance data) | `Unknown` |
+
+Worked examples:
+1. **Two instances**: `Healthy`, `Unhealthy` -> service `Unhealthy`.
+2. **Two instances**: `Healthy`, `Degraded` -> service `Degraded`.
+3. **Two instances**: `Stale`, `Healthy` -> service `Stale`.
+4. **One instance**: explicit `Healthy`, threshold-derived `Unhealthy` -> instance `Unhealthy` (worse wins).
+5. **One instance**: explicit `Maintenance`, stale timestamp -> instance `Maintenance` (maintenance precedence).
+6. **All instances**: `Maintenance`, `Maintenance` -> service `Maintenance`.
 
 #### 7. Config and branding storage split
 - Branding in DB.
@@ -256,23 +315,23 @@ The highest-priority unresolved items are: repository/project structure, concret
 
 Use this as a pre-build gate. MVP build should start only when all items are checked.
 
-- [ ] Canonical naming glossary approved (`Heimdall`, `S.W.O.T`, `Muninn`, `Huginn`; entity terms finalized).
-- [ ] Documentation path inconsistencies resolved or formally mapped.
-- [ ] Monorepo/solution structure agreed and scaffolded.
-- [ ] Backend and frontend technology stacks approved.
-- [ ] Muninn database engine selected with migration strategy.
-- [ ] Canonical monitoring payload schema (versioned) published.
-- [ ] Initial API endpoint list and response contracts approved.
-- [ ] Ingestion authentication mechanism finalized (including rotation plan).
-- [ ] Roll-up and threshold precedence matrix documented with examples.
-- [ ] Service/instance/check persistence model finalized.
-- [ ] Configuration/branding source-of-truth model finalized.
-- [ ] Retention window for “recent history” finalized.
-- [ ] Deployment reference topology documented (org + self-hosted friendly).
-- [ ] Local development bootstrap path documented (including sample data/harness).
-- [ ] Testing strategy documented with required CI checks.
-- [ ] Heimdall observability baseline defined (logs/metrics/health endpoints).
-- [ ] Huginn host/node configuration contract documented.
+- [x] Canonical naming glossary approved (`Heimdall`, `S.W.O.T`, `Muninn`, `Huginn`; entity terms finalized).
+- [x] Documentation path inconsistencies resolved or formally mapped.
+- [x] Monorepo/solution structure agreed and scaffolded.
+- [x] Backend and frontend technology stacks approved.
+- [x] Muninn database engine selected with migration strategy.
+- [x] Canonical monitoring payload schema (versioned) published.
+- [x] Initial API endpoint list and response contracts approved.
+- [x] Ingestion authentication mechanism finalized (including rotation plan).
+- [x] Roll-up and threshold precedence matrix documented with examples.
+- [x] Service/instance/check persistence model finalized.
+- [x] Configuration/branding source-of-truth model finalized.
+- [x] Retention window for “recent history” finalized.
+- [x] Deployment reference topology documented (org + self-hosted friendly).
+- [x] Local development bootstrap path documented (including sample data/harness).
+- [x] Testing strategy documented with required CI checks.
+- [x] Heimdall observability baseline defined (logs/metrics/health endpoints).
+- [x] Huginn host/node configuration contract documented.
 
 ---
 
