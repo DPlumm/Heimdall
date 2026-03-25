@@ -1,4 +1,4 @@
-# Huginn Muninn Sprint Board
+# Huginn Sprint Board
 
 ## Status columns
 Sprint Backlog | In Progress | In Review | QA | Done

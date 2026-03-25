@@ -19,11 +19,12 @@ Ship first usable Heimdall slice.
 
 ## Deliverables by component (linked to outcomes)
 - **Heimdall:** DEL-001 -> OUT-001
-- **Huginn Muninn:** API stub only for future sprint -> OUT-002
+- **Huginn:** API stub only for future sprint -> OUT-002
+- **Muninn:** none
 - **SWOT:** none
 
 ## Cross-component dependencies
-- Event schema must be stable enough for Huginn Muninn integration in Sprint 02.
+- Event schema must be stable enough for Huginn and Muninn integration in Sprint 02/03.
 
 ## Risks + fallback scope cuts
 - RSK-001: Underestimated UI integration effort.

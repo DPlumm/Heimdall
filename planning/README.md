@@ -5,7 +5,7 @@ Because initiative specifics were not supplied, this system is initialized with 
 - Product/initiative: **Heimdall MVP** (single-user ops cockpit).
 - MVP horizon: **4 sprints, 1 week each**.
 - Team composition/capacity: **1 full-stack engineer (you)** with effective capacity **12 points/sprint**.
-- Components/workstreams (named by product surface): **Heimdall**, **Huginn Muninn**, **SWOT**.
+- Components/workstreams (named by product surface): **Heimdall**, **Huginn**, **Muninn**, **SWOT**.
 - Constraints: limited implementation bandwidth, no dedicated DevOps support, one staging environment.
 - Non-goals: infra hardening programs, platform migrations, enterprise admin controls.
 

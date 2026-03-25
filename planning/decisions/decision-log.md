@@ -9,13 +9,13 @@
 - **Consequences:** Faster feedback, stricter scope cuts.
 - **Owner:** You
 
-## DEC-002 — Product-named workstreams
+## DEC-002 — Product-named workstreams with separate Huginn and Muninn tracks
 - **Date:** 2026-03-25
 - **Status:** Approved
-- **Context:** Technical component names obscured user-facing value.
-- **Decision:** Use Heimdall, Huginn Muninn, and SWOT as workstream names.
-- **Alternatives considered:** web/api/data naming.
-- **Consequences:** Better outcome traceability and prioritization clarity.
+- **Context:** Combined naming hid distinct alert intake vs acknowledgment work.
+- **Decision:** Use Heimdall, Huginn, Muninn, and SWOT as separate workstream names.
+- **Alternatives considered:** merged Huginn-Muninn board, web/api/data naming.
+- **Consequences:** Clearer ownership and easier sprint slicing.
 - **Owner:** You
 
 ## DEC-003 — Feature-first MVP scope

@@ -1,4 +1,4 @@
-# Huginn Muninn Workstream Board
+# Huginn Workstream Board
 
 ## Status columns
 Discovery | Ready | In Progress | Blocked | Review | Done
@@ -19,9 +19,9 @@ Discovery | Ready | In Progress | Blocked | Review | Done
 - Keep backlog ordered by outcome impact.
 
 ## Current queue snapshot
-- Discovery: TKT-211 alert snooze idea
-- Ready: TKT-212 ack reason capture
-- In Progress: TKT-213 alert filters
+- Discovery: TKT-211 alert source routing
+- Ready: TKT-212 signal dedupe baseline
+- In Progress: TKT-213 critical alert filters
 - Blocked: None
-- Review: TKT-214 ack history table
+- Review: TKT-214 alert list empty-state UX
 - Done: TKT-201, TKT-202

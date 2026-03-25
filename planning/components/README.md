@@ -2,8 +2,9 @@
 
 Product-named workstreams:
 1. `heimdall` (Heimdall)
-2. `huginn-muninn` (Huginn Muninn)
-3. `swot` (SWOT)
+2. `huginn` (Huginn)
+3. `muninn` (Muninn)
+4. `swot` (SWOT)
 
 ## Board standards
 - **Workstream statuses:** Discovery, Ready, In Progress, Blocked, Review, Done.
