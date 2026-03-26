@@ -372,10 +372,76 @@ These defaults provide predictable and resilient agent behavior while keeping im
 The following areas are not yet fully decided and should be revisited in later design work:
 
 - backend and frontend technology choices
-- storage model and retention periods
 - client authentication approach for monitoring submissions
-- default reporting cadence
-- roll-up rules for instance-to-service status calculation
 - approach for monitoring non-.NET targets where no client can be attached directly
 
 ---
+
+---
+
+## 2026-03-26: MVP ingestion contract required fields and canonical naming
+
+### Decision
+The MVP ingestion contract uses canonical field names aligned to `Service`, `Instance`, and `Heartbeat` terminology.
+
+Required fields are:
+- `serviceName`
+- `instanceName`
+- `hostName`
+- `version`
+- `heartbeatTimestamp`
+- `status`
+
+### Reasoning
+Consistent naming avoids domain drift and aligns contracts with the canonical terminology model.
+
+---
+
+## 2026-03-26: MVP environment field behavior
+
+### Decision
+`environment` is optional in ingestion payloads and is ignored by MVP ingest behavior.
+
+### Reasoning
+The deployment model is production-only in MVP, so ingest must not require or depend on environment routing.
+
+---
+
+## 2026-03-26: MVP roll-up scope
+
+### Decision
+MVP status roll-up scope is `instance -> service` only.
+
+### Reasoning
+This keeps roll-up logic small and shippable while preserving a clear path for later parent-service hierarchy support.
+
+---
+
+## 2026-03-26: Freshness timestamp source
+
+### Decision
+Freshness is calculated from client-provided `heartbeatTimestamp`.
+
+### Reasoning
+The monitoring client is the source of truth for check execution timing, and this preserves expected stale/unknown behavior.
+
+---
+
+## 2026-03-26: Muninn MVP storage engine
+
+### Decision
+Muninn uses SQLite for MVP storage.
+
+### Reasoning
+SQLite supports rapid MVP implementation with low operational overhead for both organisational and self-hosted deployments.
+
+---
+
+## 2026-03-26: MVP retention and refresh defaults
+
+### Decision
+- MVP status/stat history retention target is 90 days.
+- S.W.O.T auto-refresh default is 60 seconds and is configurable.
+
+### Reasoning
+These defaults provide practical utility without adding early operational complexity.
