@@ -1,0 +1,99 @@
+# Heimdall Implementation Planning (Lightweight)
+
+Use this document as the reusable planning format for Codex work. Keep plans practical, short, and implementation-focused.
+
+## How to use this file
+1. Copy the template section below for each substantial work item.
+2. Keep each plan focused on a deployable vertical slice.
+3. Link to supporting docs rather than repeating architecture/requirements.
+4. Update status as work progresses; remove stale assumptions quickly.
+
+---
+
+## Plan Template
+
+### Plan Title
+<!-- Example: MVP Slice 1 - Ingestion to Overview Read Path -->
+
+### Goal
+- What working outcome this plan should deliver (implementation outcome, not broad strategy).
+
+### Scope
+- In scope (explicit).
+- Out of scope (explicit).
+
+### Constraints
+- Technical/process constraints that limit implementation choices.
+- Include known deployment, compatibility, or operational limits.
+
+### Assumptions
+- Assumptions being made to move fast.
+- Mark assumptions that need validation later.
+
+### Open Questions
+- Questions that block implementation or affect design choices.
+- Link to `docs/open-questions.md` items when relevant.
+
+### Vertical Slices / Milestones
+- Slice 1: smallest end-to-end usable increment.
+- Slice 2: next thin increment.
+- Slice 3+: follow-on increments.
+
+### Implementation Order
+1. Concrete first step.
+2. Next step.
+3. Next step.
+
+### Risks
+- Delivery risk(s) and practical mitigation.
+- Scope creep risk(s) and guardrails.
+
+### Definition of Done
+- Clear checks for completion (code, docs, tests, deployability).
+- Include "docs aligned" and "no unresolved blockers for next slice".
+
+---
+
+## Starter Plan: Heimdall MVP Delivery
+
+### Goal
+- Deliver the smallest usable Heimdall MVP that ingests heartbeat/status data and renders a public read-only S.W.O.T overview and detail view with freshness-aware status.
+
+### Scope
+- In scope: first end-to-end ingestion -> storage -> API read -> dashboard read flow.
+- Out of scope: admin UI, auth controls, alerting, multi-environment tenancy.
+
+### Constraints
+- Must follow existing requirements, architecture, relationships, and decision log.
+- Must stay production-only per deployment for MVP.
+- Must keep planning and execution lightweight.
+
+### Assumptions
+- Initial persistence and API contracts can evolve in early slices if changes remain backwards-compatible for current clients.
+- Single deployment context is sufficient for first delivery.
+
+### Open Questions
+- See `docs/open-questions.md`.
+
+### Vertical Slices / Milestones
+- Slice 1: ingestion contract + persistence of latest instance heartbeat/status.
+- Slice 2: service roll-up + overview read API + basic S.W.O.T list view.
+- Slice 3: detail API + recent history + label filter/group read path.
+- Slice 4: threshold handling + branding config read support.
+
+### Implementation Order
+1. Lock minimal ingestion contract and canonical status/freshness behavior.
+2. Implement write path and latest-state read path.
+3. Add overview dashboard endpoint + minimal S.W.O.T overview screen.
+4. Add detail endpoint and recent history rendering.
+5. Add threshold/label refinements and branding configuration.
+
+### Risks
+- Over-design before first usable slice ships.
+- Contract churn between Huginn and Heimdall.
+- Delayed UI value if backend slices are too broad.
+
+### Definition of Done
+- Thin vertical slice deployed and manually verifiable end-to-end.
+- Relevant tests/checks pass for touched components.
+- Docs updated (`PLANS.md`, `docs/delivery-plan.md`, `docs/open-questions.md`, and any contract docs touched).
