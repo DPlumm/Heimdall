@@ -78,7 +78,7 @@ Heimdall consists of four main parts:
 | with Huginn Client  |                     |                     |
 +---------------------+                     |                     |
                                             |                     |
-+---------------------+        HTTPS        |     Heimdall API     |
++---------------------+        HTTPS        |     Heimdall API    |
 | Monitored Service B |  ---------------->  |                     |
 | with Huginn Client  |                     |                     |
 +---------------------+                     |                     |
