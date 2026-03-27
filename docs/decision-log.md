@@ -251,15 +251,197 @@ The storage component will be named `Muninn` and is part of the MVP platform sco
 
 ---
 
+## 2026-03-24: Canonical terminology model
+
+### Decision
+Heimdall MVP terminology is standardized as `Service`, `Instance`, and `Heartbeat`, and the term `object` is disallowed immediately.
+
+### Reasoning
+A single canonical vocabulary prevents semantic drift in payloads, API responses, storage schema, and dashboard behavior.
+
+### Notes
+Product/component names remain `Heimdall`, `S.W.O.T`, `Huginn`, and `Muninn`.
+
+---
+
+## 2026-03-24: Repository and package structure
+
+### Decision
+The MVP will use a monorepo with shared packages for common contracts/types, and both `Huginn` and `Muninn` will have dedicated top-level code directories.
+
+### Reasoning
+This supports fast parallel delivery while reducing cross-component contract drift.
+
+---
+
+## 2026-03-24: API and heartbeat contract authority
+
+### Decision
+Heimdall will use REST + JSON over HTTPS with OpenAPI and JSON Schema as authoritative contract artifacts. Versioning will use `/api/v1/...` and a payload `schema_version` field. The MVP ingestion endpoint is `POST /api/v1/heartbeats`.
+
+### Reasoning
+Schema-first contracts create reliable integration boundaries between Huginn, Heimdall, and S.W.O.T.
+
+---
+
+## 2026-03-24: Muninn storage engine and migration strategy
+
+### Decision
+The MVP persistence engine is SQLite with SQL-first migrations. Data retention is 90 days. Persistence includes dedicated current-state tables and history tables, with deduplication via client-provided `heartbeat_id` (UUID).
+
+### Reasoning
+This keeps initial operations simple while preserving deterministic schema control and ingestion idempotency.
+
+---
+
+## 2026-03-24: Ingestion authentication model
+
+### Decision
+Ingestion auth will use per-Huginn-node static API keys passed in headers, with immediate deny-list revocation and auth audit logging.
+
+### Reasoning
+Per-node credentials provide better accountability and revocation granularity than a single deployment key while remaining MVP-simple.
+
+### Notes
+Key rotation is manual in MVP and must be formally reviewed before 1.0 release planning. Target review date: 2026-09-01.
+
+---
+
+## 2026-03-24: Status roll-up and threshold precedence
+
+### Decision
+Instance-level evaluation gives Maintenance highest precedence and evaluates freshness (`Stale`/`Unknown`) before threshold logic. If explicit status conflicts with threshold-derived status, the worse state wins. Service roll-up order is `Unhealthy > Degraded > Stale > Unknown > Healthy`, and all-maintenance populations roll up to `Maintenance`.
+
+### Reasoning
+A deterministic precedence model prevents inconsistent status outcomes between backend and dashboard implementations.
+
+---
+
+## 2026-03-24: Configuration and branding source-of-truth split
+
+### Decision
+Branding and thresholds are DB-backed. Secrets remain in file/env configuration. Runtime config propagation uses a TTL cache with a default 5-minute TTL.
+
+### Reasoning
+This balances operational flexibility for product configuration with safer handling of sensitive credentials.
+
+---
+
+## 2026-03-24: Deployment and local development model
+
+### Decision
+The MVP deployment reference is Docker Compose on a single host/VM. Local development uses a single compose bootstrap flow with deterministic seed/demo data and Huginn simulation support.
+
+### Reasoning
+A single operational model reduces onboarding time and environment inconsistency.
+
+---
+
+## 2026-03-24: Testing strategy and CI merge gates
+
+### Decision
+PR merges require lint, unit, and contract tests; integration tests and minimal UI smoke E2E are required on PR. No hard global coverage percentage gate is applied in MVP. Breaking schema changes require contract version bumps.
+
+### Reasoning
+This establishes strong quality gates on critical behavior without introducing excessive early-process friction.
+
+---
+
+## 2026-03-24: Heimdall self-observability baseline
+
+### Decision
+Heimdall will emit JSON structured logs, provide liveness/readiness endpoints, honor `X-Request-ID`, expose `/metrics`, and default to metadata-only logging for payload safety.
+
+### Reasoning
+A minimal but production-usable observability baseline is required for operating a public status platform.
+
+---
+
+## 2026-03-24: Huginn node configuration profile and runtime defaults
+
+### Decision
+Huginn uses file configuration with env overrides, a default 60-second heartbeat interval, exponential backoff with jitter, restart-required config reload in MVP, and non-crashing retry behavior when destination is unavailable.
+
+### Reasoning
+These defaults provide predictable and resilient agent behavior while keeping implementation complexity low.
+
+---
+
 ## Open items
 
 The following areas are not yet fully decided and should be revisited in later design work:
 
 - backend and frontend technology choices
-- storage model and retention periods
 - client authentication approach for monitoring submissions
-- default reporting cadence
-- roll-up rules for instance-to-service status calculation
 - approach for monitoring non-.NET targets where no client can be attached directly
 
 ---
+
+---
+
+## 2026-03-26: MVP ingestion contract required fields and canonical naming
+
+### Decision
+The MVP ingestion contract uses canonical field names aligned to `Service`, `Instance`, and `Heartbeat` terminology.
+
+Required fields are:
+- `serviceName`
+- `instanceName`
+- `hostName`
+- `version`
+- `heartbeatTimestamp`
+- `status`
+
+### Reasoning
+Consistent naming avoids domain drift and aligns contracts with the canonical terminology model.
+
+---
+
+## 2026-03-26: MVP environment field behavior
+
+### Decision
+`environment` is optional in ingestion payloads and is ignored by MVP ingest behavior.
+
+### Reasoning
+The deployment model is production-only in MVP, so ingest must not require or depend on environment routing.
+
+---
+
+## 2026-03-26: MVP roll-up scope
+
+### Decision
+MVP status roll-up scope is `instance -> service` only.
+
+### Reasoning
+This keeps roll-up logic small and shippable while preserving a clear path for later parent-service hierarchy support.
+
+---
+
+## 2026-03-26: Freshness timestamp source
+
+### Decision
+Freshness is calculated from client-provided `heartbeatTimestamp`.
+
+### Reasoning
+The monitoring client is the source of truth for check execution timing, and this preserves expected stale/unknown behavior.
+
+---
+
+## 2026-03-26: Muninn MVP storage engine
+
+### Decision
+Muninn uses SQLite for MVP storage.
+
+### Reasoning
+SQLite supports rapid MVP implementation with low operational overhead for both organisational and self-hosted deployments.
+
+---
+
+## 2026-03-26: MVP retention and refresh defaults
+
+### Decision
+- MVP status/stat history retention target is 90 days.
+- S.W.O.T auto-refresh default is 60 seconds and is configurable.
+
+### Reasoning
+These defaults provide practical utility without adding early operational complexity.

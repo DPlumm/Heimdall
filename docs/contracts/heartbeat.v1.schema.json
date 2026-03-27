@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://heimdall.local/contracts/heartbeat.v1.schema.json",
+  "title": "Heimdall Heartbeat v1",
+  "description": "Canonical Huginn -> Heimdall heartbeat payload contract for MVP ingestion.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "heartbeat_id",
+    "service_name",
+    "instance_name",
+    "timestamp",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "heartbeat_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Client-generated idempotency key for dedupe."
+    },
+    "service_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "service_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "description": "Optional metadata. For MVP deployments this should typically be 'Production'."
+    },
+    "instance_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "host_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Healthy",
+        "Degraded",
+        "Unhealthy"
+      ]
+    },
+    "maintenance": {
+      "type": "boolean",
+      "description": "Optional status effect flag indicating planned maintenance mode."
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120
+      },
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "stats": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stat"
+      },
+      "maxItems": 200
+    },
+    "service_version": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "build": {
+      "type": "string",
+      "maxLength": 120
+    }
+  },
+  "$defs": {
+    "stat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "value"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 40
+        }
+      }
+    }
+  }
+}
