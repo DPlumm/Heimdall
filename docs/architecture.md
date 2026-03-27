@@ -74,8 +74,9 @@ Heimdall consists of four main parts:
 
 ```mermaid
 flowchart LR
-    A[Monitored Service A<br/>with Huginn Client] -->|HTTPS| B[Heimdall API]
-    C[Monitored Service B<br/>with Huginn Client] -->|HTTPS| B
-    B --> D[Muninn<br/>current + history<br/>config + branding]
-    D --> E[S.W.O.T<br/>read-only dashboard]
+    A[Monitored Service A<br/>with Huginn Client] -->|Push Heartbeat| B[Heimdall API]
+    C[Monitored Service B<br/>with Huginn Client] -->|Push Heartbeat| B
+    B -->|Update heartbeat, status, and stats| D[Muninn<br/>current + history<br/>config + branding]
+    D -->|Read dashboard data| B
+    E[S.W.O.T<br/>read-only dashboard] -->|Poll dashboard data| B
 ```
