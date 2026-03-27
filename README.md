@@ -136,3 +136,16 @@ Source layout:
 - `src/Muninn/Muninn.Storage`
 - `src/SWOT/SWOT.Web`
 - `tests/Huginn.Client.Tests`
+
+## Build paths by environment
+
+Use the build path that matches feed/network availability:
+
+- **Connected / full path** (solution restore/build + tests):
+  - `./scripts/build-connected.sh`
+- **Restricted / build-only path** (runtime projects only, no solution-level restore, no test restore/build):
+  - `./scripts/build-restricted.sh`
+
+Notes:
+- The full path uses the repo-root `nuget.config` explicitly.
+- If external NuGet feeds are unavailable in the environment, use the restricted path and do not treat test-project restore failures as application code defects.
