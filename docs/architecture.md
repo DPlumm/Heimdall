@@ -72,29 +72,10 @@ Heimdall consists of four main parts:
 
 ### Logical view
 
-```text
-+---------------------+        HTTPS        +---------------------+
-| Monitored Service A |  ---------------->  |                     |
-| with Huginn Client  |                     |                     |
-+---------------------+                     |                     |
-                                            |                     |
-+---------------------+        HTTPS        |     Heimdall API    |
-| Monitored Service B |  ---------------->  |                     |
-| with Huginn Client  |                     |                     |
-+---------------------+                     |                     |
-                                            +----------+----------+
-                                                       |
-                                                       |
-                                                       v
-                                            +---------------------+
-                                            |       Muninn        |
-                                            | current + history   |
-                                            | config + branding   |
-                                            +----------+----------+
-                                                       |
-                                                       |
-                                                       v
-                                            +---------------------+
-                                            |      S.W.O.T        |
-                                            | read-only dashboard |
-                                            +---------------------+
+```mermaid
+flowchart LR
+    A[Monitored Service A<br/>with Huginn Client] -->|HTTPS| B[Heimdall API]
+    C[Monitored Service B<br/>with Huginn Client] -->|HTTPS| B
+    B --> D[Muninn<br/>current + history<br/>config + branding]
+    D --> E[S.W.O.T<br/>read-only dashboard]
+```
