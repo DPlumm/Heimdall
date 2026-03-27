@@ -20,7 +20,7 @@ Monitoring client / agent / embedded reporting component
 - send current health status
 - send messages describing current state
 - send configurable statistics
-- identify the monitored object and instance
+- identify the monitored Service and Instance
 - include useful metadata such as version and host name
 - retry on temporary submission failures
 - keep runtime overhead low
@@ -57,11 +57,10 @@ Huginn consumes information from the monitored system, such as:
 
 Huginn produces monitoring submissions to Heimdall, including:
 
-- object name
-- object type
-- instance name
-- host name
-- timestamp
+- service name (`serviceName`)
+- instance name (`instanceName`)
+- host name (`hostName`)
+- heartbeat timestamp (`heartbeatTimestamp`)
 - status
 - message
 - labels
