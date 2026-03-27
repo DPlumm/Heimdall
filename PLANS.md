@@ -97,3 +97,55 @@ Use this document as the reusable planning format for Codex work. Keep plans pra
 - Thin vertical slice deployed and manually verifiable end-to-end.
 - Relevant tests/checks pass for touched components.
 - Docs updated (`PLANS.md`, `docs/delivery-plan.md`, `docs/open-questions.md`, and any contract docs touched).
+
+---
+
+## Active Plan: HUG-001 Bootstrap + Monorepo Build Skeleton (2026-03-27)
+
+### Goal
+- Deliver the first runnable code baseline with separate .NET solutions for `Heimdall`, `Huginn`, `Muninn`, and `S.W.O.T`, plus a root aggregate solution, while implementing `HUG-001` one-cycle Huginn submit behavior.
+
+### Scope
+- In scope:
+  - Repository folder layout for all four components.
+  - Individual component solution files and root solution file.
+  - Minimal Huginn client config-load -> one-cycle -> heartbeat submit path.
+  - Contract alignment update for heartbeat schema field naming.
+- Out of scope:
+  - Full Heimdall ingestion implementation.
+  - Muninn schema/migration runtime behavior.
+  - S.W.O.T feature-complete UI.
+
+### Constraints
+- Keep implementation MVP-thin and aligned to canonical names (`Service`, `Instance`, `Heartbeat`).
+- Use `X-API-Key` header convention for current ingestion calls.
+- Preserve production-safe logging by avoiding secret output.
+
+### Assumptions
+- `.NET` toolchain is available in contributor/dev environments even if unavailable in the current CI sandbox shell.
+- Minimal bootstrap projects are acceptable placeholders for non-Huginn components at this slice.
+
+### Open Questions
+- No new blockers for this slice after confirming schema naming direction and auth header convention.
+
+### Vertical Slices / Milestones
+- Slice 1: Monorepo folder structure + per-component `.sln` scaffolds.
+- Slice 2: Huginn one-cycle runner and payload submission.
+- Slice 3: Minimal test coverage for Huginn config/payload/logging safeguards.
+
+### Implementation Order
+1. Create source/test folder structure and solution files.
+2. Implement Huginn bootstrap runtime and models.
+3. Add Huginn tests.
+4. Align heartbeat contract docs with canonical camelCase fields.
+5. Add minimal placeholder projects for Heimdall, Muninn, and S.W.O.T.
+
+### Risks
+- Environment may not have `dotnet` CLI for validation in this sandbox.
+- Over-expanding placeholder components beyond bootstrap intent.
+
+### Definition of Done
+- All four components have independent solution entry points.
+- Root solution references all first-pass projects.
+- Huginn can perform one config-driven cycle and submit a heartbeat with canonical required fields.
+- Documentation reflects current schema naming and build layout direction.

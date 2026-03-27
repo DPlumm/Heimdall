@@ -6,29 +6,30 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version",
-    "heartbeat_id",
-    "service_name",
-    "instance_name",
-    "timestamp",
+    "serviceName",
+    "instanceName",
+    "hostName",
+    "version",
+    "heartbeatTimestamp",
     "status"
   ],
   "properties": {
-    "schema_version": {
+    "schemaVersion": {
       "type": "string",
-      "const": "1.0"
+      "const": "1.0",
+      "description": "Optional payload schema marker for forward compatibility."
     },
-    "heartbeat_id": {
+    "heartbeatId": {
       "type": "string",
       "format": "uuid",
-      "description": "Client-generated idempotency key for dedupe."
+      "description": "Optional client-generated idempotency key for dedupe."
     },
-    "service_name": {
+    "serviceName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 120
     },
-    "service_type": {
+    "serviceType": {
       "type": "string",
       "minLength": 1,
       "maxLength": 80
@@ -39,17 +40,17 @@
       "maxLength": 80,
       "description": "Optional metadata. For MVP deployments this should typically be 'Production'."
     },
-    "instance_name": {
+    "instanceName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 120
     },
-    "host_name": {
+    "hostName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 120
     },
-    "timestamp": {
+    "heartbeatTimestamp": {
       "type": "string",
       "format": "date-time"
     },
@@ -85,10 +86,6 @@
         "$ref": "#/$defs/stat"
       },
       "maxItems": 200
-    },
-    "service_version": {
-      "type": "string",
-      "maxLength": 120
     },
     "build": {
       "type": "string",

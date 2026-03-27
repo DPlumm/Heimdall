@@ -259,7 +259,5 @@ This set prioritizes the smallest useful monitoring client first, then adds imme
 
 ## Biggest unresolved blockers for Huginn workstream
 
-1. **Canonical field-name alignment across docs/artifacts**: some existing artifacts still show snake_case payload forms while MVP planning specifies canonical fields (`serviceName`, `instanceName`, `heartbeatTimestamp`); this must be reconciled before contract tests are locked.
-2. **Final Heimdall ingest auth/header convention**: Huginn needs exact auth mechanism and header naming to complete submission client behavior without rework.
-3. **Exact endpoint and error envelope contract for ingest**: retry classification and diagnostics quality depend on stable status/error response semantics.
-4. **Label normalization and threshold schema decisions**: mainly Heimdall/Muninn concerns, but they affect what Huginn should emit/validate for labels/stats in payloads.
+1. **Exact endpoint error envelope contract for ingest**: retry classification and diagnostics quality depend on stable status/error response semantics.
+2. **Label normalization and threshold schema decisions**: mainly Heimdall/Muninn concerns, but they affect what Huginn should emit/validate for labels/stats in payloads.

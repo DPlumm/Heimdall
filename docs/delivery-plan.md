@@ -90,6 +90,11 @@ Ship the smallest end-to-end usable platform increment where:
 6. **MVP finishing**: labels, thresholds, branding config read support.
 7. **Stabilization**: focused tests, docs alignment, and deployment/runbook notes.
 
+## 2026-03-27 bootstrap update
+- Added first-codebase bootstrap direction: each component (`Heimdall`, `Huginn`, `Muninn`, `S.W.O.T`) should be independently buildable through its own `.sln`, while the repository root `.sln` builds the full package together.
+- Began with `HUG-001` implementation path: Huginn one-cycle config-load and heartbeat submit bootstrap.
+- Heartbeat schema authority aligned to canonical camelCase MVP required fields (`serviceName`, `instanceName`, `hostName`, `version`, `heartbeatTimestamp`, `status`).
+
 ## Practical guardrails for rapid follow-on work
 - Keep slice size to 1-3 days where possible.
 - Merge only end-to-end slices that are demonstrably usable.
