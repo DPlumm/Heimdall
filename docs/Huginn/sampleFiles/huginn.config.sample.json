@@ -1,0 +1,12 @@
+{
+  "endpointBaseUrl": "https://localhost:5001",
+  "ingestPath": "/api/v1/heartbeats",
+  "apiKey": "replace-with-node-api-key",
+  "serviceName": "HelgaCraft",
+  "instanceName": "PROD-helgaCraft",
+  "hostName": "helga",
+  "version": "1.2.0",
+  "status": "Healthy",
+  "environment": "Production",
+  "message": "Bootstrap cycle heartbeat"
+}

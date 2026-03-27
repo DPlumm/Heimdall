@@ -118,3 +118,34 @@ Early WIP documents:
 ## Current Project Status
 
 Heimdall is currently in the definition and design stage, with MVP scope and core technical decisions being established before implementation begins.
+
+## Repository bootstrap layout (2026-03-27)
+
+Initial component scaffolding has started with separate .NET solution files for each core component and a root aggregate solution:
+
+- `Heimdall.Api.sln`
+- `Huginn.sln`
+- `Muninn.sln`
+- `SWOT.sln`
+- `Heimdall.sln` (aggregate)
+
+Source layout:
+
+- `src/Heimdall/Heimdall.Api`
+- `src/Huginn/Huginn.Client`
+- `src/Muninn/Muninn.Storage`
+- `src/SWOT/SWOT.Web`
+- `tests/Huginn.Client.Tests`
+
+## Build paths by environment
+
+Use the build path that matches feed/network availability:
+
+- **Connected / full path** (solution restore/build + tests):
+  - `./scripts/build-connected.sh`
+- **Restricted / build-only path** (runtime projects only, no solution-level restore, no test restore/build):
+  - `./scripts/build-restricted.sh`
+
+Notes:
+- The full path uses the repo-root `nuget.config` explicitly.
+- If external NuGet feeds are unavailable in the environment, use the restricted path and do not treat test-project restore failures as application code defects.

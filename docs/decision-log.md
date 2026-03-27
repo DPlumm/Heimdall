@@ -445,3 +445,29 @@ SQLite supports rapid MVP implementation with low operational overhead for both 
 
 ### Reasoning
 These defaults provide practical utility without adding early operational complexity.
+
+---
+
+## 2026-03-27: Heartbeat schema canonical field alignment
+
+### Decision
+The canonical heartbeat JSON Schema uses camelCase field names aligned to MVP canonical payload naming. Required fields are:
+- `serviceName`
+- `instanceName`
+- `hostName`
+- `version`
+- `heartbeatTimestamp`
+- `status`
+
+### Reasoning
+This removes snake_case/camelCase ambiguity between tickets, delivery docs, and schema artifacts and reduces early integration rework risk for `Huginn` and `Heimdall`.
+
+---
+
+## 2026-03-27: HUG-001 bootstrap auth header convention
+
+### Decision
+For current bootstrap implementation work, Huginn sends ingestion authentication using the `X-API-Key` request header.
+
+### Reasoning
+The workstream required a concrete header convention to safely begin HUG-001 implementation without blocking on further auth envelope expansion.

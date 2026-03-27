@@ -16,3 +16,7 @@ Resolved decisions must be recorded in `docs/decision-log.md` and reflected in `
 - **Authentication/audit model for non-public deployments**.
 - **Alerting and notification integration priorities**.
 - **Multi-environment and tenancy strategy**.
+
+## 2026-03-27 implementation note
+- No additional blocking open questions were introduced while starting `HUG-001`.
+- Current implementation direction uses canonical camelCase heartbeat fields and `X-API-Key` for ingestion auth header in the bootstrap client.
