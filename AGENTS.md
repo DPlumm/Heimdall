@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Repository-wide instructions for Codex contributors.
+Repository-wide instructions for LLM contributors.
 
 ## Scope and intent
 - Keep delivery MVP-first: prefer thin, end-to-end vertical slices over large horizontal rewrites.
